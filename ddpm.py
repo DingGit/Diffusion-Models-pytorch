@@ -58,13 +58,18 @@ class Diffusion:
         return x
 
 
-def train(args):
+def train(args, resume=False):
     setup_logging(args.run_name)
     device = args.device
     dataloader = get_data(args)
     model = UNet().to(device)
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
     mse = nn.MSELoss()
+    if resume is not False:
+        device = 'cuda'
+        model = UNet().to(device)
+        ckpt = torch.load(resume)
+        model.load_state_dict(ckpt)
     diffusion = Diffusion(img_size=args.image_size, device=device)
     logger = SummaryWriter(os.path.join("runs", args.run_name))
     l = len(dataloader)
@@ -96,13 +101,13 @@ def launch():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
     args.run_name = "DDPM_Uncondtional"
-    args.epochs = 500
-    args.batch_size = 12
-    args.image_size = 64
-    args.dataset_path = r"C:\Users\dome\datasets\landscape_img_folder"
+    args.epochs = 600
+    args.batch_size = 3
+    args.image_size = 80
+    args.dataset_path = '/home/volvo/dsh/jh/tmp'
     args.device = "cuda"
     args.lr = 3e-4
-    train(args)
+    train(args, resume=False)#'models/DDPM_Uncondtional/ckpt2.pt')
 
 
 if __name__ == '__main__':

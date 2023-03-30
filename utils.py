@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 
 
 def plot_images(images):
-    plt.figure(figsize=(32, 32))
+    plt.figure(figsize=(128, 128))
     plt.imshow(torch.cat([
         torch.cat([i for i in images.cpu()], dim=-1),
     ], dim=-2).permute(1, 2, 0).cpu())
@@ -24,7 +24,7 @@ def save_images(images, path, **kwargs):
 def get_data(args):
     transforms = torchvision.transforms.Compose([
         torchvision.transforms.Resize(80),  # args.image_size + 1/4 *args.image_size
-        torchvision.transforms.RandomResizedCrop(args.image_size, scale=(0.8, 1.0)),
+        torchvision.transforms.RandomResizedCrop(args.image_size, scale=(0.85, 1.0)),
         torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
